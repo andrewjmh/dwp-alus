@@ -1,2 +1,2 @@
-# blog-node-sqllite-jwt-auth-example
+# DWP ALUS
 Node.js JWT Tokens Login &amp; Registration with SQLite Database
