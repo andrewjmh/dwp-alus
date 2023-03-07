@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 require("dotenv").config();
 const port = 3004;
@@ -9,6 +10,8 @@ var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 const DBSOURCE = "usersdb.sqlite";
 const auth = require("./middleware");
+const manageRoutes = require('./route/manage-routes').getRoutes();
+const redirectRoutes = require('./route/redirect-routes').routeRedirect();
 
 let db = new sqlite3.Database(DBSOURCE, (err) => {
     if (err) {
@@ -55,8 +58,16 @@ app.use(
     })
 );
 
-app.get('/', (req, res) => res.send('API Root'));
+app.set('view engine', 'ejs');
 
+app.get('/home', function(req, res){
+
+    // Rendering home.ejs page
+    console.log('hello');
+    res.render(path.join(__dirname, 'views/home.ejs'));
+})
+
+app.use('/', redirectRoutes);
 
 //*  G E T   A L L
 
