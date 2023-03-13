@@ -73,7 +73,7 @@ const postRegisterRequest = async (req, res) => {
         } else {
             console.log('connection success!')
         }
-        var errors = []
+        const errors = []
         try {
             const {Username, Email, Password} = req.body;
 
@@ -90,7 +90,7 @@ const postRegisterRequest = async (req, res) => {
             let userExists = false;
 
 
-            var sql = "SELECT * FROM Users WHERE Email = ?"
+            const sql = "SELECT * FROM Users WHERE Email = ?"
             await alusDatabase.all(sql, Email, (err, result) => {
                 if (err) {
                     res.status(402).json({"error": err.message});
@@ -99,9 +99,9 @@ const postRegisterRequest = async (req, res) => {
 
                 if (result.length === 0) {
 
-                    var salt = bcrypt.genSaltSync(10);
+                    const salt = bcrypt.genSaltSync(10);
 
-                    var data = {
+                    const data = {
                         Username: Username,
                         Email: Email,
                         Password: bcrypt.hashSync(Password, salt),
@@ -109,9 +109,9 @@ const postRegisterRequest = async (req, res) => {
                         DateCreated: Date('now')
                     }
 
-                    var sql = 'INSERT INTO Users (Username, Email, Password, Salt, DateCreated) VALUES (?,?,?,?,?)'
-                    var params = [data.Username, data.Email, data.Password, data.Salt, Date('now')]
-                    var user = alusDatabase.run(sql, params, function (err, innerResult) {
+                    const sql = 'INSERT INTO Users (Username, Email, Password, Salt, DateCreated) VALUES (?,?,?,?,?)'
+                    const params = [data.Username, data.Email, data.Password, data.Salt, Date('now')]
+                    const user = alusDatabase.run(sql, params, function (err, innerResult) {
                         if (err) {
                             res.status(400).json({"error": err.message})
                             return;
@@ -171,8 +171,6 @@ const postLoginRequest = async (req, res) => {
                 rows.forEach(function (row) {
                     user.push(row);
                 })
-
-                var PHash = bcrypt.hashSync(Password, salt);
 
                 const passwordMatch = await bcrypt.compare(Password, user[0].Password);
 
