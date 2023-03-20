@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const {json} = require("express");
 const sqlite3 = require('sqlite3').verbose()
 const databaseSource = "alus.db"
 require("dotenv").config();
@@ -75,6 +76,7 @@ const postRegisterRequest = async (req, res) => {
             throw err
         } else {
             console.log('connection success!')
+            console.log(req.body);
         }
         const errors = []
         try {

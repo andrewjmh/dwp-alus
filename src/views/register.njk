@@ -26,37 +26,40 @@
 <div class="govuk-width-container ">
     <main class="govuk-main-wrapper " id="main-content" role="main">
         <h1 class="govuk-heading-xl">DWP Acronym Lookup Service</h1>
-        <fieldset class="govuk-fieldset">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h1 class="govuk-fieldset__heading">
-                    Register new user
-                </h1>
-            </legend>
-            <div class="govuk-form-group">
-                <label class="govuk-label" for="email">
-                    Email
-                </label>
-                <input class="govuk-input govuk-input--width-10" id="email" name="email" type="text">
-            </div>
-            <div class="govuk-form-group">
-                <label class="govuk-label" for="username">
-                    Username
-                </label>
-                <input class="govuk-input govuk-input--width-10" id="username" name="username" type="text">
-            </div>
-            <div class="govuk-form-group">
-                <label class="govuk-label" for="password">
-                    Password
-                </label>
-                <input class="govuk-input govuk-input--width-10" id="password" name="password" type="text" autocomplete="off">
-            </div>
-            <div class="govuk-form-group">
-                <label class="govuk-label" for="confirm-password">
-                    Confirm Password
-                </label>
-                <input class="govuk-input govuk-input--width-10" id="confirm-password" name="confirm-password" type="text" autocomplete="off">
-            </div>
-        </fieldset>
+        <form method="post" action="/api/register">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading">
+                        Register new user
+                    </h1>
+                </legend>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="Email">
+                        Email
+                    </label>
+                    <input class="govuk-input govuk-input--width-10" id="Email" name="Email" type="text">
+                </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="Username">
+                        Username
+                    </label>
+                    <input class="govuk-input govuk-input--width-10" id="Username" name="Username" type="text">
+                </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="Password">
+                        Password
+                    </label>
+                    <input class="govuk-input govuk-input--width-10" id="Password" name="Password" type="text" autocomplete="off">
+                </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="confirm-password">
+                        Confirm Password
+                    </label>
+                    <input class="govuk-input govuk-input--width-10" id="confirm-password" name="confirm-password" type="text" autocomplete="off">
+                </div>
+            </fieldset>
+            <input type="submit" value="Submit">
+        </form>
     </main>
     <a href="home">
         <button class="govuk-button" data-module="govuk-button">
