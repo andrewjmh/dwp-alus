@@ -3,16 +3,14 @@ const path = require('path');
 const app = express();
 require("dotenv").config();
 const port = 3004;
-var md5 = require('md5')
-var sqlite3 = require('sqlite3').verbose()
 const cors = require('cors');
-var jwt = require('jsonwebtoken');
-var bcrypt = require('bcryptjs');
-const DBSOURCE = "usersdb.sqlite";
 const auth = require("./middleware");
 const manageRoutes = require('./route/manage-routes').getRoutes();
 const redirectRoutes = require('./route/redirect-routes').routeRedirect();
-const {createDatabase, insertOne} = require('./sqlite/database');
+const {createDatabase} = require('./sqlite/database');
+const { nunjucksConfig } = require('./nunjucks-config');
+
+nunjucksConfig(app);
 
 createDatabase();
 
@@ -23,12 +21,12 @@ app.use(
     })
 );
 
-app.set('view engine', 'ejs');
+app.use('/assets', express.static(path.resolve(__dirname, '../assets'), ));
 
 app.get('/home', function(req, res){
 
-    // Rendering home.ejs page
-    res.render(path.join(__dirname, 'views/home.ejs'));
+    // Rendering home.njk page
+    res.render(path.join(__dirname, './views/home.njk'));
 })
 
 app.use('/', manageRoutes);

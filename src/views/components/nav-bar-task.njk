@@ -1,0 +1,39 @@
+{%- from "moj/components/primary-navigation/macro.njk" import mojPrimaryNavigation -%}
+{%- from "./macros/search-macro.njk" import mojSearch -%}
+  {% include "./header.njk" %}
+{%- set inlineSearchHtml %}
+  {{ mojSearch({
+    classes: 'moj-search--ondark moj-search--inline psrf-search-input',
+    input: {
+      id: 'nino-search-input',
+      name: 'nino_search_input'
+    },
+    label: {
+      text: 'Input NINO',
+      classes: 'govuk-visually-hidden'
+    },
+    button: {
+      text: 'Search NINO',
+      name: 'search_nino',
+      id: 'nino-search-button'
+    },
+    method: 'post',
+    action: '/awacs/task/nino'
+  }) }}
+{% endset -%}
+
+{{ mojPrimaryNavigation({
+  label: 'Primary navigation',
+  items: [{
+    text: menuOut,
+    href: '/awacs/task/',
+    active: outActive,
+    attributes: {id: 'outstanding-tasks-link'}
+  }, {
+    text: menuPaused,
+    href: '/awacs/task/paused/',
+    active: pausedActive,
+    attributes: {id: 'paused-tasks-link'}
+  }],
+  searchHtml: inlineSearchHtml
+}) }}

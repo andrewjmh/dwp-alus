@@ -1,0 +1,42 @@
+{% macro pagination(page, numPerPage, total, target) %}
+  {% set maxPage = ((total/numPerPage) | round(0,'ceil')) %}
+  {% if maxPage > 1 %}
+    {% set pageList = (maxPage | getPageList(page)) %}
+<nav id="pagination-label" class="moj-pagination" aria-label="Pagination navigation">
+  <ul id="pagination-links" class="moj-pagination__list">
+    {% if page > 1 %}
+      <li id="page-select-previous-item" class="moj-pagination__item  moj-pagination__item--prev">
+        <a id="page-select-previous" class="moj-pagination__link"
+           href={{ target+'?page='+ (((page| int ) - 1) | min(maxPage)) }}>Previous<span
+            class="govuk-visually-hidden"> page</span></a>
+      </li>
+    {% endif %}
+    {% for item in pageList %}
+      {% if item === '...' %}
+        <li class="moj-pagination__item moj-pagination__item--dots">…</li>
+      {% elseif page === (item | int) %}
+        <li id="page-select-{{ item }}" class="moj-pagination__item moj-pagination__item--active">{{ item }}</li>
+      {% else %}
+        <li class="moj-pagination__item">
+          <a id="page-select-{{ item }}" class="moj-pagination__link"
+             href={{ target+'?page='+item }} aria-label="{{ 'Page ' + item +' of ' +  maxPage }}">{{ item }}</a>
+        </li>
+      {% endif %}
+    {% endfor %}
+    {% if page < maxPage %}
+      <li id="page-select-item" class="moj-pagination__item  moj-pagination__item--next">
+        <a class="moj-pagination__link" id="page-select-next" href="{{ target+'?page='+ ((page| int) + 1) }}">
+          Next<span class="govuk-visually-hidden"> page</span></a>
+      </li>
+    {% endif %}
+  </ul>
+  {% if  (page - 1) * numPerPage + 1 >  total %}
+    <p id="page-select-selection" class="moj-pagination__results">Showing <b>0</b> of <b>{{ total }}</b> results</p>
+  {% else %}
+    <p id="page-select-selection" class="moj-pagination__results">Showing <b>{{ (page - 1) * numPerPage + 1 }}</b>
+      to
+      <b>{{ (((page - 1) * numPerPage + numPerPage) | min(total)) }}</b> of <b>{{ total }}</b> results</p>
+  {% endif %}
+</nav>
+{% endif %}
+{% endmacro %}

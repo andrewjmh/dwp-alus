@@ -1,0 +1,9 @@
+{%- from "govuk/components/tag/macro.njk" import govukTag -%}
+
+{% macro withinKpiTag(withinKpi, index) %}
+{{govukTag({
+  text: ("IN 3 DAYS" if withinKpi else "AFTER 3 DAYS"),
+  classes: ("govuk-tag--green" if withinKpi else "govuk-tag--red"),
+  attributes: {id: ("within-kpi-tag-" + index)}
+})}}
+{% endmacro %}

@@ -1,0 +1,35 @@
+{
+  "name": "dwp-alus",
+  "version": "1.0.0",
+  "description": "Acronym LookUp Service",
+  "main": "src/index.js",
+  "scripts": {
+    "build:sass": "sass --quiet assets/stylesheets/main.scss assets/css/main.css",
+    "build:js": "cp ./node_modules/govuk-frontend/govuk/all.js ./src/assets/js/all.js",
+    "build:assets": "npm run build:sass && npm run build:js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ministryofjustice/frontend": "^1.6.5",
+    "axios": "^1.3.4",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "freemarker": "^2.0.1",
+    "govuk-frontend": "^4.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "md5": "^2.3.0",
+    "nodemon": "^2.0.12",
+    "nunjucks": "^3.2.3",
+    "path": "^0.12.7",
+    "react": "^18.2.0",
+    "sass": "^1.58.3",
+    "sqlite": "^4.1.2",
+    "sqlite3": "^5.0.2"
+  }
+}

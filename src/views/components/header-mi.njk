@@ -1,0 +1,30 @@
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+{% set mailBody = '<a id="feedback-email" class="govuk-link" href="mailto:psrf.amepayments@dwp.gov.uk?subject=AWACS Exception Management UI feedback&body=Please do not send citizen\'s payment account details to this mailbox. Any emails containing citizen\'s personal data will be deleted.">feedback</a>' %}
+
+{% block content %}
+<header class="psrf-header" role="banner">
+  <div class="psrf-header__container">
+    <div class="psrf-header__logo psrf-grid-column-two-thirds-from-desktop">
+      <a class="psrf-header__link" href="#" id="header-name">Manage redirected payments</a>
+    </div>
+    <nav class="psrf-header__navigation psrf-grid-column-one-third-from-desktop" aria-label="Account navigation">
+      <ul class="psrf-header__navigation-list">
+        <li class="psrf-header__navigation-item">
+          <a class="psrf-header__navigation-link" id="view-outstanding-tasks-link" href="/awacs/task/">
+            <b>View outstanding tasks</b>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<div class="psrf-header__container">
+  {{ govukPhaseBanner({
+  tag: {
+    text: "beta"
+  },
+  html: ' <span>This is a new service – your ' + mailBody + ' will help us to improve it.</span>',
+  attributes: {id: 'feedback-link'}
+  }) }}
+</div>
+{% endblock %}

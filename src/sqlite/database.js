@@ -1,13 +1,13 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const sqlite3 = require('sqlite3').verbose()
-const DBSOURCE = "../usersdb.sqlite";
+const databaseSource = "alus.db"
 require("dotenv").config();
 
 const salt = bcrypt.genSaltSync(10);
 
 const createDatabase = () => {
-    const alusDatabase = new sqlite3.Database(DBSOURCE, (err) => {
+    const alusDatabase = new sqlite3.Database(databaseSource, (err) => {
         if (err) {
             // Cannot open database
             console.error(err.message)
@@ -15,6 +15,7 @@ const createDatabase = () => {
         }
         else {
 
+            console.log('making db');
             alusDatabase.run(`CREATE TABLE Users (
             Id INTEGER PRIMARY KEY AUTOINCREMENT,
             Username text,
@@ -27,8 +28,10 @@ const createDatabase = () => {
             )`,
                 (err) => {
                     if (err) {
+                        console.log('table exists')
                         // Table already created
                     } else{
+                        console.log('adding rows');
                         // Table just created, creating some rows
                         const insert = 'INSERT INTO Users (Username, Email, Password, Salt, DateCreated) VALUES (?,?,?,?,?)'
                         alusDatabase.run(insert, ["user1", "user1@example.com", bcrypt.hashSync("user1", salt), salt, Date('now')])
@@ -49,7 +52,7 @@ const insertOne = (userInfo) => {
         email,
         password,
     } = userInfo
-    const alusDatabase = new sqlite3.Database(DBSOURCE, (err) => {
+    const alusDatabase = new sqlite3.Database(databaseSource, (err) => {
         if (err) {
             // Cannot open database
             console.error(err.message)
@@ -65,7 +68,7 @@ const insertOne = (userInfo) => {
 }
 
 const postRegisterRequest = async (req, res) => {
-    const alusDatabase = new sqlite3.Database(DBSOURCE, async (err) => {
+    const alusDatabase = new sqlite3.Database(databaseSource, async (err) => {
         if (err) {
             // Cannot open database
             console.error(err.message)
@@ -142,7 +145,7 @@ const postRegisterRequest = async (req, res) => {
 }
 
 const postLoginRequest = async (req, res) => {
-    const alusDatabase = new sqlite3.Database(DBSOURCE, async (err) => {
+    const alusDatabase = new sqlite3.Database(databaseSource, async (err) => {
         if (err) {
             // Cannot open database
             console.error(err.message)
@@ -160,7 +163,6 @@ const postLoginRequest = async (req, res) => {
             let user = [];
 
             const sql = "SELECT * FROM Users WHERE Email = ?";
-
 
             alusDatabase.all(sql, Email, async function (err, rows) {
                 if (err) {
@@ -190,7 +192,6 @@ const postLoginRequest = async (req, res) => {
                     user[0].Token = token;
                     return res.status(200).send(user);
                 }
-
             });
 
         } catch (err) {

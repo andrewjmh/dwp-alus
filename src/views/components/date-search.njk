@@ -1,0 +1,166 @@
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% macro dateSearch(params) %}
+  {% set errors=params.errors %}
+  {% set errorFields=params.errorFields %}
+  {% set startDate=params.startDate %}
+  {% set endDate=params.endDate %}
+  {% if errors | length !== 0 %}
+    {{ govukErrorSummary({
+      titleHtml: '<div id="error-summary-title">There is a problem</div>',
+      errorList: errors,
+      attributes: {id:'error-summary'}
+    }) }}
+  {% endif %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <details id={{ params.id }} class="govuk-details"
+               {% if errors| length !== 0 or startDate or endDate %}open{% endif %}>
+        <summary id="search-header" class="govuk-details__summary">
+          <span>{{ params.summaryText }}</span>
+        </summary>
+        <form id="set-dates-form" action="/awacs/manage/set-dates" method="POST">
+
+          <div id="search-section" class="govuk-details__text">
+
+            <div {% if (errors) and ('fromday' in errorFields or 'frommonth' in errorFields or 'fromyear' in errorFields or 'invalidFrom' in errorFields or 'fromInFuture' in errorFields or 'searchPeriod' in errorFields) %} class="govuk-form-group govuk-form-group--error" {% else %} class="govuk-form-group" {% endif %}
+              id="start-date-section">
+              <label class="govuk-label govuk-label--s" id="start-date-label" for="start-date">From
+                date</label>
+              {% if (errors) %}
+                {% if ('fromday' in errorFields) %}
+                  <span id="invalid-start-day-message"
+                        class="govuk-error-message">The from day must be a valid day</span>
+                {% endif %}
+                {% if ('frommonth' in errorFields) %}
+                  <span id="invalid-start-month-message"
+                        class="govuk-error-message">The from date must include a month</span>
+                {% endif %}
+                {% if ('fromyear' in errorFields) %}
+                  <span id="invalid-start-year-message"
+                        class="govuk-error-message">The from date must include a year</span>
+                {% endif %}
+                {% if ('invalidFrom' in errorFields) %}
+                  <span id="invalid-start-date-message"
+                        class="govuk-error-message">The from date must be a valid date</span>
+                {% endif %}
+                {% if ('fromInFuture' in errorFields) %}
+                  <span id="start-after-today-message" class="govuk-error-message">The from date must be today or in the past</span>
+                {% endif %}
+                {% if ('searchPeriod' in errorFields) %}
+                  <span id="invalid-date-range-message" class="govuk-error-message">The from date must be the same as, or before, the to date</span>
+                {% endif %}
+              {% endif %}
+
+              <div class="govuk-date-input" id="start-date">
+                <div class="govuk-date-input__item">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label govuk-date-input__label" for="start-day">
+                      Day
+                    </label>
+                    <input {% if (errors) and ('fromday' in errorFields or 'invalidFrom' in errorFields or 'fromInFuture' in errorFields) %} class="govuk-input govuk-date-input__input govuk-input--width-2 govuk-input--error" {% else %} class="govuk-input govuk-date-input__input govuk-input--width-2" {% endif %}
+                      id="start-day" aria-label="day" name="startDay" maxlength="2"
+                      type="text" value="{{ startDate.day }}">
+                  </div>
+                </div>
+                <div class="govuk-date-input__item">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label govuk-date-input__label" for="start-month">
+                      Month
+                    </label>
+                    <input {% if (errors) and ('frommonth' in errorFields or 'invalidFrom' in errorFields  or 'fromInFuture' in errorFields) %} class="govuk-input govuk-date-input__input govuk-input--width-2 govuk-input--error" {% else %} class="govuk-input govuk-date-input__input govuk-input--width-2" {% endif %}
+                      id="start-month" aria-label="month" name="startMonth" maxlength="2"
+                      type="text" value="{{ startDate.month }}">
+                  </div>
+                </div>
+                <div class="govuk-date-input__item">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label govuk-date-input__label" for="start-year">
+                      Year
+                    </label>
+                    <input {% if (errors) and ('fromyear' in errorFields or 'invalidFrom' in errorFields  or 'fromInFuture' in errorFields) %} class="govuk-input govuk-date-input__input govuk-input--width-4 govuk-input--error" {% else %} class="govuk-input govuk-date-input__input govuk-input--width-4" {% endif %}
+                      id="start-year" aria-label="year" name="startYear" maxlength="4"
+                      type="text" value="{{ startDate.year }}">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div {% if (errors) and ('endday' in errorFields or 'endmonth' in errorFields or 'endyear' in errorFields or 'invalidEnd' in errorFields or 'endInFuture' in errorFields) %} class="govuk-form-group govuk-form-group--error" {% else %} class="govuk-form-group" {% endif %}
+              id="end-date-section">
+              <label class="govuk-label govuk-label--s" id="end-date-label" for="end-date">To date</label>
+              {% if (errors) %}
+                {% if ('endday' in errorFields) %}
+                  <span id="invalid-end-day-message" class="govuk-error-message">The to day must be a valid day</span>
+                {% endif %}
+                {% if ('endmonth' in errorFields) %}
+                  <span id="invalid-end-month-message"
+                        class="govuk-error-message">The to date must include a month</span>
+                {% endif %}
+                {% if ('endyear' in errorFields) %}
+                  <span id="invalid-end-year-message" class="govuk-error-message">The to date must include a year</span>
+                {% endif %}
+                {% if ('invalidEnd' in errorFields) %}
+                  <span id="invalid-end-date-message"
+                        class="govuk-error-message">The to date must be a valid date</span>
+                {% endif %}
+                {% if ('endInFuture' in errorFields) %}
+                  <span id="end-after-today-message" class="govuk-error-message">The to date must be today or in the past</span>
+                {% endif %}
+              {% endif %}
+              <div class="govuk-date-input" id="end-date">
+
+                <div class="govuk-date-input__item">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label govuk-date-input__label" for="end-day">
+                      Day
+                    </label>
+                    <input {% if (errors) and ('endInFuture' in errorFields or 'invalidEnd' in errorFields or 'endday' in errorFields) %} class="govuk-input govuk-date-input__input govuk-input--width-2 govuk-input--error" {% else %} class="govuk-input govuk-date-input__input govuk-input--width-2" {% endif %}
+                      id="end-day" aria-label="day" name="endDay" maxlength="2"
+                      type="text" value="{{ endDate.day }}">
+                  </div>
+                </div>
+
+                <div class="govuk-date-input__item">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label govuk-date-input__label" for="end-month">
+                      Month
+                    </label>
+                    <input {% if (errors) and ('endmonth' in errorFields  or 'endInFuture' in errorFields or 'invalidEnd' in errorFields) %} class="govuk-input govuk-date-input__input govuk-input--width-2 govuk-input--error" {% else %} class="govuk-input govuk-date-input__input govuk-input--width-2" {% endif %}
+                      id="end-month" aria-label="month" name="endMonth" maxlength="2"
+                      type="text" value="{{ endDate.month }}">
+                  </div>
+                </div>
+                <div class="govuk-date-input__item">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label govuk-date-input__label" for="end-year">
+                      Year
+                    </label>
+                    <input {% if (errors) and ('endyear' in errorFields  or 'endInFuture' in errorFields or 'invalidEnd' in errorFields) %} class="govuk-input govuk-date-input__input govuk-input--width-4 govuk-input--error" {% else %} class="govuk-input govuk-date-input__input govuk-input--width-4" {% endif %}
+                      id="end-year" aria-label="year" name="endYear" maxlength="4" type="text"
+                      value="{{ endDate.year }}">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <input type="hidden" id="redirect-url" name="redirect_url"
+                   value={{ params.redirectUrl if params.redirectUrl else "/awacs/manage" }}>
+
+            <div class="form-group" id="set-date-section">
+              <input type="submit" id="date-search" class="govuk-button" value="Search"/>
+            </div>
+          </div>
+        </form>
+
+      </details>
+    </div>
+  </div>
+  </details>
+
+{% endmacro %}
+
+
+
+
