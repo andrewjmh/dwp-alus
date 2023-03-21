@@ -192,6 +192,8 @@ const postLoginRequest = async (req, res) => {
                     );
 
                     user[0].Token = token;
+                    console.log('user below');
+                    console.log(user);
                     return res.status(200).send(user);
                 }
             });
