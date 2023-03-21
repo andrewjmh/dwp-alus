@@ -26,17 +26,37 @@
 <div class="govuk-width-container ">
     <main class="govuk-main-wrapper " id="main-content" role="main">
         <h1 class="govuk-heading-xl">DWP Acronym Lookup Service</h1>
-        <a href="register">
-            <button class="govuk-button" data-module="govuk-button">
-                Register
-            </button>
-        </a>
-        <a href="login">
-            <button class="govuk-button" data-module="govuk-button">
-                Login
-            </button>
-        </a>
+        <form method="post" action="/api/login">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading">
+                        Login to account
+                    </h1>
+                </legend>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="Email">
+                        Email
+                    </label>
+                    <input class="govuk-input govuk-input--width-10" id="Email" name="Email" type="text">
+                </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="Password">
+                        Password
+                    </label>
+                    <input class="govuk-input govuk-input--width-10" id="Password" name="Password" type="text" autocomplete="off">
+                </div>
+            </fieldset>
+            <input type="submit" value="Submit">
+        </form>
     </main>
+    <a href="home">
+        <button class="govuk-button" data-module="govuk-button">
+            Back to Home
+        </button>
+    </a>
+    <button class="govuk-button" data-module="govuk-button">
+        Login
+    </button>
 </div>
 
 {% block footer %}
