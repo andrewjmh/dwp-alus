@@ -29,41 +29,14 @@
             <button onclick="window.location.href='home';" class="govuk-button" data-module="govuk-button">
                 Home
             </button>
-            <button onclick="window.location.href='register';" class="govuk-button" data-module="govuk-button">
-                Register
-            </button>
-        </h1>
-        {% if err is defined  %}
-        <div class="govuk-error-summary" data-module="govuk-error-summary">
-            <div role="alert">
-                <h2 class="govuk-error-summary__title">
-                    The username or password you have entered is incorrect.
-                </h2>
-            </div>
+            <button onclick="window.location.href='login';" class="govuk-button" data-module="govuk-button">
+                Login
+            </button></h1>
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                User registered
+            </h1>
         </div>
-        {% endif %}
-        <form method="post" action="/api/login">
-            <fieldset class="govuk-fieldset">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-fieldset__heading">
-                        Login to account
-                    </h1>
-                </legend>
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="Email">
-                        Email
-                    </label>
-                    <input class="govuk-input govuk-input--width-10" id="Email" name="Email" type="text" required>
-                </div>
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="Password">
-                        Password
-                    </label>
-                    <input class="govuk-input govuk-input--width-10" id="Password" name="Password" type="password" autocomplete="off" required>
-                </div>
-            </fieldset>
-            <input type="submit" value="Log in to account" class="govuk-button govuk-button--start" data-module="govuk-button">
-        </form>
     </main>
 </div>
 

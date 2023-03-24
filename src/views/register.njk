@@ -25,7 +25,13 @@
 {% endblock %}
 <div class="govuk-width-container ">
     <main class="govuk-main-wrapper " id="main-content" role="main">
-        <h1 class="govuk-heading-xl">DWP Acronym Lookup Service</h1>
+        <h1 class="govuk-heading-xl">DWP Acronym Lookup Service
+            <button onclick="window.location.href='home';" class="govuk-button" data-module="govuk-button">
+                Home
+            </button>
+            <button onclick="window.location.href='login';" class="govuk-button" data-module="govuk-button">
+                Login
+            </button></h1>
         <form method="post" action="/api/register">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -37,38 +43,42 @@
                     <label class="govuk-label" for="Email">
                         Email
                     </label>
-                    <input class="govuk-input govuk-input--width-10" id="Email" name="Email" type="text">
+                    <div id="email-hint" class="govuk-hint">
+                        Example: andrew@example.com
+                    </div>
+                    <input class="govuk-input govuk-input--width-10" id="Email" name="Email" type="text" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}" required>
                 </div>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="Username">
                         Username
                     </label>
-                    <input class="govuk-input govuk-input--width-10" id="Username" name="Username" type="text">
+                    <div id="username-hint" class="govuk-hint">
+                        Must be between 4 and 16 characters long, no special characters allowed.
+                    </div>
+                    <input class="govuk-input govuk-input--width-10" id="Username" name="Username" type="text" pattern="([A-Za-z0-9]{4,16})\w+" required>
                 </div>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="Password">
                         Password
                     </label>
-                    <input class="govuk-input govuk-input--width-10" id="Password" name="Password" type="text" autocomplete="off">
+                    <div id="password-hint" class="govuk-hint">
+                        Must contain at least eight characters, one uppercase letter, one lowercase letter and one number.
+                    </div>
+                    <input class="govuk-input govuk-input--width-10" id="Password" name="Password" type="password" autocomplete="off" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$" required>
                 </div>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="confirm-password">
                         Confirm Password
                     </label>
-                    <input class="govuk-input govuk-input--width-10" id="confirm-password" name="confirm-password" type="text" autocomplete="off">
+                    <div id="confirm-password-hint" class="govuk-hint">
+                        Must match password above.
+                    </div>
+                    <input class="govuk-input govuk-input--width-10" id="confirm-password" name="confirm-password" type="password" autocomplete="off" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$" required>
                 </div>
             </fieldset>
-            <input type="submit" value="Submit">
+            <input type="submit" value="Register Account" class="govuk-button govuk-button--start" data-module="govuk-button">
         </form>
     </main>
-    <a href="home">
-        <button class="govuk-button" data-module="govuk-button">
-            Back to Home
-        </button>
-    </a>
-    <button class="govuk-button" data-module="govuk-button">
-        Login
-    </button>
 </div>
 
 {% block footer %}

@@ -25,17 +25,19 @@
 {% endblock %}
 <div class="govuk-width-container ">
     <main class="govuk-main-wrapper " id="main-content" role="main">
-        <h1 class="govuk-heading-xl">DWP Acronym Lookup Service</h1>
-        <a href="register">
-            <button class="govuk-button" data-module="govuk-button">
-                Register
-            </button>
-        </a>
-        <a href="login">
-            <button class="govuk-button" data-module="govuk-button">
-                Login
-            </button>
-        </a>
+        <h1 class="govuk-heading-xl">DWP Acronym Lookup Service
+                <button onclick="window.location.href='register';" class="govuk-button" data-module="govuk-button">
+                    Register
+                </button>
+                <button onclick="window.location.href='login';" class="govuk-button" data-module="govuk-button">
+                    Login
+                </button>
+        </h1>
+        {% if username is defined %}
+            <p>Welcome, {{ username }}!</p>
+        {% else %}
+            <p>Log in to your account to contribute to this page.</p>
+        {% endif %}
     </main>
 </div>
 

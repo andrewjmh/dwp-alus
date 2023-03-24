@@ -1,11 +1,12 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const {json} = require("express");
+const path = require("path");
 const sqlite3 = require('sqlite3').verbose()
 const databaseSource = "alus.db"
 require("dotenv").config();
 
-const salt = bcrypt.genSaltSync(10);
+//const salt = bcrypt.genSaltSync(10);
 
 const createDatabase = () => {
     const alusDatabase = new sqlite3.Database(databaseSource, (err) => {
@@ -68,83 +69,63 @@ const insertOne = (userInfo) => {
 });
 }
 
+// A function that handles a post request to register a new user
 const postRegisterRequest = async (req, res) => {
-    const alusDatabase = new sqlite3.Database(databaseSource, async (err) => {
-        if (err) {
-            // Cannot open database
-            console.error(err.message)
-            throw err
-        } else {
-            console.log('connection success!')
-            console.log(req.body);
+    try {
+        // Extracting the username, email and password from the request body
+        const { Username, Email, Password } = req.body;
+
+        // If any of the required fields is missing, return an error response
+        if (!Username || !Email || !Password) {
+            return res.status(400).json({ error: "Username, email, and password are required" });
         }
-        const errors = []
-        try {
-            const {Username, Email, Password} = req.body;
 
-            if (!Username) {
-                errors.push("Username is missing");
-            }
-            if (!Email) {
-                errors.push("Email is missing");
-            }
-            if (errors.length) {
-                res.status(400).json({"error": errors.join(",")});
-                return;
-            }
-            let userExists = false;
+        // Creating a new database connection
+        const alusDatabase = new sqlite3.Database(databaseSource);
 
-
-            const sql = "SELECT * FROM Users WHERE Email = ?"
-            await alusDatabase.all(sql, Email, (err, result) => {
-                if (err) {
-                    res.status(402).json({"error": err.message});
-                    return;
-                }
-
-                if (result.length === 0) {
-
-                    const salt = bcrypt.genSaltSync(10);
-
-                    const data = {
-                        Username: Username,
-                        Email: Email,
-                        Password: bcrypt.hashSync(Password, salt),
-                        Salt: salt,
-                        DateCreated: Date('now')
-                    }
-
-                    const sql = 'INSERT INTO Users (Username, Email, Password, Salt, DateCreated) VALUES (?,?,?,?,?)'
-                    const params = [data.Username, data.Email, data.Password, data.Salt, Date('now')]
-                    const user = alusDatabase.run(sql, params, function (err, innerResult) {
-                        if (err) {
-                            res.status(400).json({"error": err.message})
-                            return;
-                        }
-
-                    });
-                } else {
-                    userExists = true;
-                    // res.status(404).send("User Already Exist. Please Login");
-                }
+        // Selecting a user with the provided email
+        const sql = "SELECT * FROM Users WHERE Email = ?";
+        const existingUser = await new Promise((resolve, reject) => {
+            alusDatabase.get(sql, [Email], (err, row) => {
+                if (err) reject(err);
+                resolve(row);
             });
+        });
 
-            setTimeout(() => {
-                if (!userExists) {
-                    res.status(201).json("Success");
-                } else {
-                    res.status(400).json("Record already exists. Please login");
-                }
-            }, 500);
-
-
-        } catch (err) {
-            console.log(err);
+        // If a user with the provided email already exists, close the database connection and return an error response
+        if (existingUser) {
+            alusDatabase.close();
+            return res.status(400).json({ error: "A user with this email already exists. Please login." });
         }
-        alusDatabase.close();
-    });
 
-}
+        // Generating a salt for the password
+        const salt = bcrypt.genSaltSync(10);
+        // Hashing the password with the generated salt
+        const hashedPassword = bcrypt.hashSync(Password, salt);
+        // Getting the current date and time
+        const dateCreated = Date.now();
+
+        // Inserting the new user into the database
+        const insertSql = 'INSERT INTO Users (Username, Email, Password, Salt, DateCreated) VALUES (?,?,?,?,?)';
+        const insertParams = [Username, Email, hashedPassword, salt, dateCreated];
+
+        alusDatabase.run(insertSql, insertParams, function (err) {
+            alusDatabase.close();
+
+            // If there's an error inserting the new user, return an error response
+            if (err) {
+                return res.status(400).json({ error: err.message });
+            }
+
+            // If the user was inserted successfully, return a success response
+            return res.render('register_success.njk');
+        });
+    } catch (error) {
+        // If there's an error during the execution of the function, log the error and return a server error response
+        console.error(error);
+        return res.status(500).json({ error: "Server error." });
+    }
+};
 
 const postLoginRequest = async (req, res) => {
     const alusDatabase = new sqlite3.Database(databaseSource, async (err) => {
@@ -176,28 +157,29 @@ const postLoginRequest = async (req, res) => {
                     user.push(row);
                 })
 
+                if (typeof user === "undefined" || typeof user[0] === "undefined") {
+                    const err = "Password is required";
+                    return res.render("login.njk", { err });
+                }
+
+                // Compare password with hash using bcrypt
                 const passwordMatch = await bcrypt.compare(Password, user[0].Password);
 
-                if (passwordMatch === false) {
-                    console.log('passwords dont match');
-                    return res.status(400).send("No Match");
-                } else {
-                    console.log('passwords match');
-                    const token = jwt.sign(
-                        {user_id: user[0].Id, username: user[0].Username, Email},
-                        process.env.TOKEN_KEY,
-                        {
-                            expiresIn: "1h", // 60s = 60 seconds - (60m = 60 minutes, 2h = 2 hours, 2d = 2 days)
-                        }
-                    );
-
-                    user[0].Token = token;
-                    console.log('user below');
-                    console.log(user);
-                    return res.status(200).send(user);
+                // If password doesn't match, render login page with error message
+                if (!passwordMatch) {
+                    const err = "Invalid password";
+                    return res.render("login.njk", { err });
                 }
-            });
 
+                // If password matches, create a JWT token and send it as a response
+                const payload = { user_id: user[0].Id, username: user[0].Username, Email };
+                const options = { expiresIn: "1h" }; // Token expires in 1 hour
+                user[0].Token = jwt.sign(payload, process.env.TOKEN_KEY, options);
+                console.log('user below');
+                console.log(user);
+                const username = user[0].Username;
+                return res.render('home.njk', {username});
+                });
         } catch (err) {
             console.log(err);
         }
