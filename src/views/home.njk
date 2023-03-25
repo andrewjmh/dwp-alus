@@ -41,6 +41,10 @@
     </main>
 </div>
 
+{% block acronyms %}
+    {% include "./acronyms.njk" %}
+{% endblock %}
+
 {% block footer %}
     {% include "./components/footer.njk" %}
 {% endblock %}

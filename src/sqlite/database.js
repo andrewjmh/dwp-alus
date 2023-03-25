@@ -6,8 +6,6 @@ const sqlite3 = require('sqlite3').verbose()
 const databaseSource = "alus.db"
 require("dotenv").config();
 
-//const salt = bcrypt.genSaltSync(10);
-
 const createDatabase = () => {
     const alusDatabase = new sqlite3.Database(databaseSource, (err) => {
         if (err) {
@@ -17,7 +15,9 @@ const createDatabase = () => {
         }
         else {
 
-            console.log('making db');
+            const salt = bcrypt.genSaltSync(10);
+
+            console.log('creating user table');
             alusDatabase.run(`CREATE TABLE Users (
             Id INTEGER PRIMARY KEY AUTOINCREMENT,
             Username text,
@@ -30,9 +30,9 @@ const createDatabase = () => {
             )`,
                 (err) => {
                     if (err) {
-                        console.log('table exists')
+                        console.log('user table already exists')
                         // Table already created
-                    } else{
+                    } else {
                         console.log('adding rows');
                         // Table just created, creating some rows
                         const insert = 'INSERT INTO Users (Username, Email, Password, Salt, DateCreated) VALUES (?,?,?,?,?)'
@@ -43,31 +43,48 @@ const createDatabase = () => {
                         alusDatabase.run(insert, ["user5", "user5@example.com", bcrypt.hashSync("user5", salt), salt, Date('now')])
                     }
                 });
+            console.log('creating acronym table');
+            alusDatabase.run(`CREATE TABLE Acronyms (
+            acronym_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            acronym text,
+            definition text,
+            description text
+            )`,
+                (err) => {
+                    if (err) {
+                        console.log('acronym table already exists')
+                        // Table already created
+                    } else{
+                        console.log('adding rows');
+                        // Table just created, creating some rows
+                        const insert = 'INSERT INTO Acronyms (acronym, definition, description) VALUES (?,?,?)'
+                        alusDatabase.run(insert, ["DWP", "Department for Work and Pensions", "Responsible for welfare, pensions and child maintenance policy. As the UK’s biggest public service department it administers the State Pension and a range of working age, disability and ill health benefits to around 20 million claimants and customers."])
+                        alusDatabase.run(insert, ["ABC", "Alphabet", "all the letters"])
+                        alusDatabase.run(insert, ["ABC1", "Alphabet1", "all the letters1"])
+                        alusDatabase.run(insert, ["ABC2", "Alphabet2", "all the letters2"])
+                        alusDatabase.run(insert, ["ABC3", "Alphabet3", "all the letters3"])
+                    }
+                });
             alusDatabase.close();
         }
     });
 }
 
-const insertOne = (userInfo) => {
-    const {
-        name,
-        email,
-        password,
-    } = userInfo
-    const alusDatabase = new sqlite3.Database(databaseSource, (err) => {
+const getAcronyms = (req, res) => {
+    // Creating a new database connection
+    const alusDatabase = new sqlite3.Database(databaseSource);
+    // Querying the Acronyms table
+    alusDatabase.all('SELECT * FROM Acronyms', (err, rows) => {
         if (err) {
-            // Cannot open database
-            console.error(err.message)
-            throw err
+            console.error(err.message);
+            res.status(500).send('Error retrieving acronyms from database');
+            return;
         }
-        else {
-            console.log('connection success!')
-        }
-        const insert = 'INSERT INTO Users (Username, Email, Password, Salt, DateCreated) VALUES (?,?,?,?,?)'
-        alusDatabase.run(insert, [name, email, bcrypt.hashSync(password, salt), salt, Date('now')])
-        alusDatabase.close();
-});
-}
+        alusDatabase.close()
+        // Render the template using Nunjucks
+        return res.render('home', { acronyms: rows });
+    });
+};
 
 // A function that handles a post request to register a new user
 const postRegisterRequest = async (req, res) => {
@@ -190,7 +207,7 @@ const postLoginRequest = async (req, res) => {
 
 module.exports = {
     createDatabase,
-    insertOne,
+    getAcronyms,
     postRegisterRequest,
     postLoginRequest,
 };

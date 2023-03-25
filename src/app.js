@@ -6,7 +6,7 @@ const port = 3004;
 const cors = require('cors');
 const manageRoutes = require('./route/manage-routes').getRoutes();
 const redirectRoutes = require('./route/redirect-routes').routeRedirect();
-const {createDatabase} = require('./sqlite/database');
+const {createDatabase, getAcronyms} = require('./sqlite/database');
 const { nunjucksConfig } = require('./nunjucks-config');
 
 nunjucksConfig(app);
@@ -21,12 +21,6 @@ app.use(
 );
 
 app.use('/assets', express.static(path.resolve(__dirname, '../assets'), ));
-
-app.get('/home', function(req, res){
-
-    // Rendering home.njk page
-    res.render(path.join(__dirname, './views/home.njk'));
-})
 
 app.use('/', manageRoutes);
 app.use('/', redirectRoutes);
