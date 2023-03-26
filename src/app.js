@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const session = require('express-session');
 require("dotenv").config();
 const port = 3004;
 const cors = require('cors');
@@ -12,6 +13,12 @@ const { nunjucksConfig } = require('./nunjucks-config');
 nunjucksConfig(app);
 
 createDatabase();
+
+app.use(session({
+    secret: 'mysecretkey', // Change this to a random, secure value
+    resave: false,
+    saveUninitialized: true
+}));
 
 app.use(
     express.urlencoded(),

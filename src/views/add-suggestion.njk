@@ -39,7 +39,7 @@
                 </div>
             </div>
         {% endif %}
-        <form method="post" action="">
+        <form method="post" action="/api/suggestion">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h1 class="govuk-fieldset__heading">
@@ -56,7 +56,7 @@
                     <input class="govuk-input govuk-input--width-5" id="acronym" name="acronym" type="text" pattern="([A-Za-z0-9]{1,16})\w+" required>
                 </div>
                 <div class="govuk-form-group">
-                    <label class="govuk-label" for="Password">
+                    <label class="govuk-label" for="acronym">
                         Definition
                     </label>
                     <div id="definition-hint" class="govuk-hint">
