@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>DWP Acronym Lookup Service - Login</title>
+    <title>DWP Acronym Lookup Service - Suggest an Acronym</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#0b0c0c">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -29,40 +29,52 @@
             <button onclick="window.location.href='home';" class="govuk-button" data-module="govuk-button">
                 Home
             </button>
-            <button onclick="window.location.href='register';" class="govuk-button" data-module="govuk-button">
-                Register
-            </button>
         </h1>
         {% if err is defined  %}
-        <div class="govuk-error-summary" data-module="govuk-error-summary">
-            <div role="alert">
-                <h2 class="govuk-error-summary__title">
-                    The username or password you have entered is incorrect.
-                </h2>
+            <div class="govuk-error-summary" data-module="govuk-error-summary">
+                <div role="alert">
+                    <h2 class="govuk-error-summary__title">
+                        The username or password you have entered is incorrect.
+                    </h2>
+                </div>
             </div>
-        </div>
         {% endif %}
-        <form method="post" action="/api/login">
+        <form method="post" action="">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h1 class="govuk-fieldset__heading">
-                        Login to account
+                        Suggest an acronym
                     </h1>
                 </legend>
                 <div class="govuk-form-group">
-                    <label class="govuk-label" for="Email">
-                        Email
+                    <label class="govuk-label" for="acronym">
+                        Acronym
                     </label>
-                    <input class="govuk-input govuk-input--width-10" id="Email" name="Email" type="text" required>
+                    <div id="definition-hint" class="govuk-hint">
+                        No special characters allowed.
+                    </div>
+                    <input class="govuk-input govuk-input--width-5" id="acronym" name="acronym" type="text" pattern="([A-Za-z0-9]{1,16})\w+" required>
                 </div>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="Password">
-                        Password
+                        Definition
                     </label>
-                    <input class="govuk-input govuk-input--width-10" id="Password" name="Password" type="password" autocomplete="off" required>
+                    <div id="definition-hint" class="govuk-hint">
+                        What does the acronym stand for?
+                    </div>
+                    <input class="govuk-input govuk-input--width-20" id="definition" name="definition" type="text" pattern="([A-Za-z0-9]{1,16})\w+" required>
+                </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="description">
+                        Description
+                    </label>
+                    <div id="description-hint" class="govuk-hint">
+                        Any additional information goes here. (300-character limit).
+                    </div>
+                    <textarea class="govuk-textarea" id="description" name="description" rows="5" ></textarea>
                 </div>
             </fieldset>
-            <input type="submit" value="Log in to account" class="govuk-button govuk-button--start" data-module="govuk-button">
+            <input type="submit" value="Submit" class="govuk-button govuk-button--start" data-module="govuk-button" pattern="^.{1,300}$">
         </form>
     </main>
 </div>

@@ -34,16 +34,18 @@
                 </button>
         </h1>
         {% if username is defined %}
-            <p>Welcome, {{ username }}!</p>
+            <h2 class="govuk-heading-m">Welcome, {{ username }}!
+                <button onclick="window.location.href='../add-suggestion';" class="govuk-button" data-module="govuk-button">
+                    Suggest an acronym
+                </button></h2>
         {% else %}
-            <p>Log in to your account to contribute to this page.</p>
+            <h2 class="govuk-heading-m">Log in to your account to contribute to this page.</h2>
         {% endif %}
     </main>
+    {% block acronyms %}
+        {% include "./acronyms.njk" %}
+    {% endblock %}
 </div>
-
-{% block acronyms %}
-    {% include "./acronyms.njk" %}
-{% endblock %}
 
 {% block footer %}
     {% include "./components/footer.njk" %}

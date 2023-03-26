@@ -5217,7 +5217,7 @@
   .govuk-summary-list__actions {
     width: 20%;
     padding-right: 0;
-    text-align: right;
+    text-align: left;
   }
 }
 

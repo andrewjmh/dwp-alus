@@ -14,21 +14,47 @@
 {#    {% endfor %}#}
 {#</table>#}
 {#</body>#}
-<table class="govuk-table">
-    <thead class="govuk-table__head">
-    <tr class="govuk-table__row">
-        <th scope="col" class="govuk-table__header">Acronym</th>
-        <th scope="col" class="govuk-table__header">Definition</th>
-        <th scope="col" class="govuk-table__header">Description</th>
-    </tr>
-    </thead>
-    <tbody class="govuk-table__body">
+{#<table class="govuk-table">#}
+{#    <thead class="govuk-table__head">#}
+{#    <tr class="govuk-table__row">#}
+{#        <th scope="col" class="govuk-table__header">Acronym</th>#}
+{#        <th scope="col" class="govuk-table__header">Definition</th>#}
+{#        <th scope="col" class="govuk-table__header">Description</th>#}
+{#    </tr>#}
+{#    </thead>#}
+{#    <tbody class="govuk-table__body">#}
+{#    {% for acronym in acronyms %}#}
+{#    <tr class="govuk-table__row">#}
+{#        <td>{{ acronym.acronym }}</td>#}
+{#        <td>{{ acronym.definition }}</td>#}
+{#        <td>{{ acronym.description }}</td>#}
+{#    </tr>#}
+{#    {% endfor %}#}
+{#    </tbody>#}
+{#</table>#}
+<dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Acronym
+        </dt>
+        <dd class="govuk-summary-list__key">
+            Definition
+        </dd>
+        <dd class="govuk-summary-list__key">
+            Description
+        </dd>
+    </div>
     {% for acronym in acronyms %}
-    <tr class="govuk-table__row">
-        <td>{{ acronym.acronym }}</td>
-        <td>{{ acronym.definition }}</td>
-        <td>{{ acronym.description }}</td>
-    </tr>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                {{ acronym.acronym }}
+            </dt>
+            <dd class="govuk-summary-list__value">
+                {{ acronym.definition }}
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                {{ acronym.description }}
+            </dd>
+        </div>
     {% endfor %}
-    </tbody>
-</table>
+</dl>

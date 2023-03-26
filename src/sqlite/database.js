@@ -74,7 +74,7 @@ const getAcronyms = (req, res) => {
     // Creating a new database connection
     const alusDatabase = new sqlite3.Database(databaseSource);
     // Querying the Acronyms table
-    alusDatabase.all('SELECT * FROM Acronyms', (err, rows) => {
+    alusDatabase.all('SELECT * FROM Acronyms ORDER BY acronym ASC', (err, rows) => {
         if (err) {
             console.error(err.message);
             res.status(500).send('Error retrieving acronyms from database');
