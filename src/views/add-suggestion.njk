@@ -60,9 +60,9 @@
                         Definition
                     </label>
                     <div id="definition-hint" class="govuk-hint">
-                        What does the acronym stand for?
+                        What does the acronym stand for? (100-character limit).
                     </div>
-                    <input class="govuk-input govuk-input--width-20" id="definition" name="definition" type="text" pattern="([A-Za-z0-9]{1,16})\w+" required>
+                    <input class="govuk-input govuk-input--width-20" id="definition" name="definition" type="text" pattern="^.{1,100}$" required>
                 </div>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="description">

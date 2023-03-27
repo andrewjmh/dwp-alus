@@ -72,10 +72,10 @@ const createDatabase = () => {
                         // Table just created, creating some rows
                         const insert = 'INSERT INTO Acronyms (acronym, definition, description) VALUES (?,?,?)'
                         alusDatabase.run(insert, ["DWP", "Department for Work and Pensions", "Responsible for welfare, pensions and child maintenance policy. As the UK’s biggest public service department it administers the State Pension and a range of working age, disability and ill health benefits to around 20 million claimants and customers."])
-                        alusDatabase.run(insert, ["ABC", "Alphabet", "all the letters"])
-                        alusDatabase.run(insert, ["ABC1", "Alphabet1", "all the letters1"])
-                        alusDatabase.run(insert, ["ABC2", "Alphabet2", "all the letters2"])
-                        alusDatabase.run(insert, ["ABC3", "Alphabet3", "all the letters3"])
+                        alusDatabase.run(insert, ["BACS", "Bankers' Automated Clearing System", "Responsible for the schemes behind the clearing and settlement of UK automated payment methods, Direct Debit and Bacs Direct Credit."])
+                        alusDatabase.run(insert, ["DLA", "Disabled Living Allowance", "A monthly payment to help with care and mobility needs if you are living with a disability."])
+                        alusDatabase.run(insert, ["JSA", "Job Seekers' Allowance", "An unemployment benefit paid by the Government of the United Kingdom to people who are unemployed and actively seeking work."])
+                        alusDatabase.run(insert, ["NINO", "National Insurance Number", "Your National Insurance number is your own personal account number. The number makes sure that the National Insurance contributions and tax you pay are properly recorded against your name."])
                     }
                 });
             console.log('creating approval table');
@@ -145,7 +145,8 @@ const postRegisterRequest = async (req, res) => {
         // If a user with the provided email already exists, close the database connection and return an error response
         if (existingUser) {
             alusDatabase.close();
-            return res.status(400).json({ error: "A user with this email already exists. Please login." });
+            let user_exists_error = "A user with this email already exists. Please login.";
+            return res.render('register', { user_exists_error })
         }
 
         // Generating a salt for the password
@@ -156,7 +157,7 @@ const postRegisterRequest = async (req, res) => {
         const dateCreated = Date.now();
 
         // Inserting the new user into the database
-        const insertSql = 'INSERT INTO Users (username, email, password, salt, DateCreated) VALUES (?,?,?,?,?)';
+        const insertSql = 'INSERT INTO Users (username, email, password, salt, date_created) VALUES (?,?,?,?,?)';
         const insertParams = [username, email, hashedpassword, salt, dateCreated];
 
         alusDatabase.run(insertSql, insertParams, function (err) {

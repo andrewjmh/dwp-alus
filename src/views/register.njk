@@ -32,6 +32,15 @@
             <button onclick="window.location.href='login';" class="govuk-button" data-module="govuk-button">
                 Login
             </button></h1>
+        {% if user_exists_error is defined %}
+            <div class="govuk-error-summary" data-module="govuk-error-summary">
+                <div role="alert">
+                    <h2 class="govuk-error-summary__title">
+                        {{ user_exists_error }}
+                    </h2>
+                </div>
+            </div>
+        {% endif %}
         <form method="post" action="/api/register">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
