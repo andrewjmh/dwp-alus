@@ -1,0 +1,34 @@
+<dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Acronym
+        </dt>
+        <dd class="govuk-summary-list__key">
+            Definition
+        </dd>
+        <dd class="govuk-summary-list__key">
+            Description
+        </dd>
+    </div>
+    {% for suggestion in suggestions %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                {{ suggestion.acronym }}
+                <form method="post" action="/add-suggestion">
+                    <input type="hidden" name="suggestion_id" value="{{ suggestion.suggestion_id }}">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">Add</button>
+                </form>
+                <form method="post" action="/delete-suggestion">
+                    <input type="hidden" name="suggestion_id" value="{{ suggestion.suggestion_id }}">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">Delete</button>
+                </form>
+            </dt>
+            <dd class="govuk-summary-list__value">
+                {{ suggestion.definition }}
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                {{ suggestion.description }}
+            </dd>
+        </div>
+    {% endfor %}
+</dl>

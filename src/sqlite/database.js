@@ -7,6 +7,7 @@ const sqlite3 = require('sqlite3').verbose()
 const databaseSource = "alus.db"
 require("dotenv").config();
 
+// A function that creates a database if one doesn't exist
 const createDatabase = () => {
     const alusDatabase = new sqlite3.Database(databaseSource, (err) => {
         if (err) {
@@ -97,6 +98,7 @@ const createDatabase = () => {
     });
 }
 
+// A function that retrieves all the acronyms and sends them to the home page
 const getAcronyms = (req, res) => {
     // Creating a new database connection
     const alusDatabase = new sqlite3.Database(databaseSource);
@@ -108,9 +110,6 @@ const getAcronyms = (req, res) => {
             return;
         }
         alusDatabase.close()
-        // Render the template using Nunjucks
-        //return res.render('home', { acronyms: rows });
-        //req.session.acronyms = { acronyms: rows };
 
         if (req.session) {
             res.render('home', { username: req.session.username, is_admin: req.session.isAdmin,  acronyms: rows });
@@ -178,6 +177,7 @@ const postRegisterRequest = async (req, res) => {
     }
 };
 
+// A function that handles a post request to log in an existing user
 const postLoginRequest = async (req, res) => {
     const alusDatabase = new sqlite3.Database(databaseSource, async (err) => {
         if (err) {
@@ -226,13 +226,12 @@ const postLoginRequest = async (req, res) => {
                 const payload = { user_id: user[0].user_id, username: user[0].username, email, is_admin: user[0].is_admin };
                 const options = { expiresIn: "1h" }; // Token expires in 1 hour
                 user[0].Token = jwt.sign(payload, process.env.TOKEN_KEY, options);
-                console.log('user below');
-                console.log(user);
+                //Set session variables
                 req.session.userId = user[0].user_id;
                 req.session.username = user[0].username;
                 req.session.isAdmin = user[0].is_admin;
                 const username = user[0].username;
-                //res.render('home', {username, is_admin: req.session.isAdmin, acronyms: req.session.acronyms});
+                //Reload home page with acronyms
                 getAcronyms(req, res);
                 });
         } catch (err) {
@@ -242,6 +241,7 @@ const postLoginRequest = async (req, res) => {
     alusDatabase.close();
 }
 
+// A function that handles a post request to store a new acronym suggestion
 const postSuggestion = async (req, res) => {
     const user_id = req.session.userId;
     const { acronym, definition, description } = req.body;
@@ -275,6 +275,88 @@ const postSuggestion = async (req, res) => {
     alusDatabase.close();
 };
 
+// A function that retrieves all the user suggestions and sends them to the suggestions page
+const getSuggestions = (req, res) => {
+    const alusDatabase = new sqlite3.Database(databaseSource);
+
+    // Query the suggestions table to retrieve all suggestions
+    alusDatabase.all('SELECT * FROM Suggestions', (err, rows) => {
+        if (err) {
+            console.error(err.message);
+            res.status(500).send('Error retrieving suggestions from database');
+            return;
+        }
+
+        // Render the view-suggestions.njk page and pass the suggestions as context
+        res.render('view-suggestions', { username: req.session.username, is_admin: req.session.isAdmin, suggestions: rows });
+    });
+
+    alusDatabase.close();
+};
+
+// A function that deletes a user suggestion by suggestion id
+const deleteSuggestion = (req, res) => {
+    const suggestion_id = req.body.suggestion_id;
+    const alusDatabase = new sqlite3.Database(databaseSource);
+
+    alusDatabase.run(`DELETE FROM Suggestions WHERE suggestion_id = ?`, suggestion_id, (err) => {
+        if (err) {
+            console.error(err.message);
+            res.status(500).send('Error deleting suggestion from database');
+        } else {
+            console.log('Suggestion deleted');
+            getSuggestions(req, res);
+        }
+    });
+
+    alusDatabase.close();
+};
+
+const addSuggestion = (req, res) => {
+    // Get the suggestion ID from the request
+    const suggestion_id = req.body.suggestion_id;
+
+    // Creating a new database connection
+    const alusDatabase = new sqlite3.Database(databaseSource);
+
+    // Update the suggestion
+    alusDatabase.run(`UPDATE Suggestions SET is_approved = 1 WHERE suggestion_id = ?`, suggestion_id, function (err) {
+        if (err) {
+            console.error(err.message);
+            res.status(500).send('Error updating suggestion in database');
+            return;
+        }
+
+        // Add the suggestion to the acronyms table
+        const insertStatement = `INSERT INTO Acronyms (acronym, definition, description) 
+                              SELECT acronym, definition, description FROM Suggestions 
+                              WHERE suggestion_id = ?`;
+        alusDatabase.run(insertStatement, suggestion_id, function (err) {
+            if (err) {
+                console.error(err.message);
+                res.status(500).send('Error adding suggestion to database');
+                return;
+            }
+        alusDatabase.run(
+            'DELETE FROM Suggestions WHERE suggestion_id = ?',
+            [suggestion_id],
+            (err) => {
+                if (err) {
+                    console.error(err.message);
+                    res.status(500).send('Error deleting suggestion from database');
+                    return;
+                }
+
+            console.log(`Suggestion with ID ${suggestion_id} added to acronyms`);
+
+            alusDatabase.close();
+
+            // Reload suggestions and direct to the view suggestions page
+            getSuggestions(req, res);
+            });
+        });
+    });
+};
 
 module.exports = {
     createDatabase,
@@ -282,4 +364,7 @@ module.exports = {
     postRegisterRequest,
     postLoginRequest,
     postSuggestion,
+    getSuggestions,
+    deleteSuggestion,
+    addSuggestion,
 };
