@@ -110,9 +110,10 @@ const getAcronyms = (req, res) => {
         alusDatabase.close()
         // Render the template using Nunjucks
         //return res.render('home', { acronyms: rows });
+        //req.session.acronyms = { acronyms: rows };
 
-        if (req.session.username) {
-            res.render('home', { username: req.session.username, acronyms: rows });
+        if (req.session) {
+            res.render('home', { username: req.session.username, is_admin: req.session.isAdmin,  acronyms: rows });
         } else {
             res.render('home', { acronyms: rows });
         }
@@ -222,15 +223,17 @@ const postLoginRequest = async (req, res) => {
                 }
 
                 // If password matches, create a JWT token and send it as a response
-                const payload = { user_id: user[0].user_id, username: user[0].username, email };
+                const payload = { user_id: user[0].user_id, username: user[0].username, email, is_admin: user[0].is_admin };
                 const options = { expiresIn: "1h" }; // Token expires in 1 hour
                 user[0].Token = jwt.sign(payload, process.env.TOKEN_KEY, options);
                 console.log('user below');
                 console.log(user);
                 req.session.userId = user[0].user_id;
                 req.session.username = user[0].username;
+                req.session.isAdmin = user[0].is_admin;
                 const username = user[0].username;
-                return res.render('home.njk', {username});
+                //res.render('home', {username, is_admin: req.session.isAdmin, acronyms: req.session.acronyms});
+                getAcronyms(req, res);
                 });
         } catch (err) {
             console.log(err);

@@ -26,18 +26,30 @@
 <div class="govuk-width-container ">
     <main class="govuk-main-wrapper " id="main-content" role="main">
         <h1 class="govuk-heading-xl">DWP Acronym Lookup Service
+            {% if username is defined %}
+            <form method="POST" action="/logout">
+                <button onclick="window.location.href='../home';" class="govuk-button" data-module="govuk-button">
+                    Log out
+                </button>
+            </form>
+            {% else %}
                 <button onclick="window.location.href='register';" class="govuk-button" data-module="govuk-button">
                     Register
                 </button>
                 <button onclick="window.location.href='login';" class="govuk-button" data-module="govuk-button">
                     Login
                 </button>
+            {% endif %}
         </h1>
         {% if username is defined %}
-            <h2 class="govuk-heading-m">Welcome, {{ username }}!
-                <button onclick="window.location.href='../add-suggestion';" class="govuk-button" data-module="govuk-button">
-                    Suggest an acronym
-                </button></h2>
+            {% if is_admin == 1 %}
+                <h2 class="govuk-heading-m">Hello, admin {{ username }}!</h2>
+            {% else %}
+                <h2 class="govuk-heading-m">Hello, user {{ username }}!</h2>
+            {% endif %}
+            <button onclick="window.location.href='../add-suggestion';" class="govuk-button" data-module="govuk-button">
+                Suggest an acronym
+            </button>
         {% else %}
             <h2 class="govuk-heading-m">Log in to your account to contribute to this page.</h2>
         {% endif %}

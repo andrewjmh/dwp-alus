@@ -5,6 +5,7 @@ const {getLoginScreen} = require("../controller/get-login-screen");
 const {getAddSuggestionScreen} = require("../controller/get-add-suggestion-screen");
 const {postRegisterRequest, postLoginRequest, postSuggestion, getAcronyms} = require('../sqlite/database');
 const {postTokenTest} = require('../controller/token-test');
+const {logout} = require("../controller/logout");
 const auth = require("../middleware");
 
 const getRoutes = () => {
@@ -17,6 +18,7 @@ const getRoutes = () => {
     app.post('/api/register', postRegisterRequest);
     app.post('/api/login', postLoginRequest);
     app.post('/api/suggestion', postSuggestion);
+    app.post('/logout', logout);
     app.post('/api/test', postTokenTest);
     return app;
 };
