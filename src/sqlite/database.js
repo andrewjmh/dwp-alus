@@ -359,6 +359,29 @@ const addSuggestion = (req, res) => {
     });
 };
 
+const editSuggestion = (req, res) => {
+    const suggestion_id = req.body.suggestion_id;
+    const newAcronym = req.body.acronym;
+    const newDefinition = req.body.definition;
+    const newDescription = req.body.description;
+
+    const alusDatabase = new sqlite3.Database(databaseSource);
+    alusDatabase.run(
+        `UPDATE Suggestions SET acronym=?, definition=?, description=? WHERE suggestion_id=?`,
+        [newAcronym, newDefinition, newDescription, suggestion_id],
+        (err) => {
+            if (err) {
+                console.error(err.message);
+                res.status(500).send('Error updating suggestion');
+                return;
+            }
+            console.log(`Suggestion ${suggestion_id} updated`);
+            alusDatabase.close();
+            getSuggestions(req, res);
+        }
+    );
+};
+
 module.exports = {
     createDatabase,
     getAcronyms,
@@ -368,4 +391,5 @@ module.exports = {
     getSuggestions,
     deleteSuggestion,
     addSuggestion,
+    editSuggestion,
 };

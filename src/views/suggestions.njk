@@ -22,6 +22,10 @@
                     <input type="hidden" name="suggestion_id" value="{{ suggestion.suggestion_id }}">
                     <button type="submit" class="govuk-button" data-module="govuk-button">Delete</button>
                 </form>
+                <form method="post" action="/edit-suggestion">
+                    <input type="hidden" name="suggestion_id" value="{{ suggestion.suggestion_id }}">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">Edit</button>
+                </form>
             </dt>
             <dd class="govuk-summary-list__value">
                 {{ suggestion.definition }}
