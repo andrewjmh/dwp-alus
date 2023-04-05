@@ -5,7 +5,7 @@ const getHome = async (req, res) => {
         res.render( path.resolve('src', 'views', 'home.njk') );
     } catch (err) {
         console.log(err);
-        console.log('its broken')
+        console.log('Failed to get home page')
     }
 };
 module.exports = {
