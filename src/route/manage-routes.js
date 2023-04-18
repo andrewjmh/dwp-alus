@@ -1,5 +1,4 @@
 const express = require('express');
-const {getHome} = require('../controller/home.js');
 const {getRegisterScreen} = require("../controller/get-register-screen");
 const {getLoginScreen} = require("../controller/get-login-screen");
 const {getAddSuggestionScreen} = require("../controller/get-add-suggestion-screen");
